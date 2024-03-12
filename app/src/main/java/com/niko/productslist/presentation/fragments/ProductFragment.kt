@@ -1,6 +1,7 @@
 package com.niko.productslist.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.niko.productslist.R
 import com.niko.productslist.data.repository.ProductRepositoryImpl
 import com.niko.productslist.databinding.FragmentProductBinding
 import com.niko.productslist.domain.useCases.GetProductList
 import com.niko.productslist.presentation.recView.ProductAdapter
 import com.niko.productslist.presentation.viewModels.ProductViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ProductFragment : Fragment() {
     private var _binding: FragmentProductBinding? = null
@@ -45,7 +52,6 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecView()
-
     }
 
     private fun initRecView() {
@@ -57,6 +63,24 @@ class ProductFragment : Fragment() {
         adapter.onLongTap = {
             viewModel.addToBacket(it.id)
         }
+        addPagination()
+    }
+
+    private fun addPagination() {
+        binding.prodRecView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.getUsersWithPagination()
+                    }
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {

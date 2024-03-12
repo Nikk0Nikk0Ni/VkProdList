@@ -14,6 +14,7 @@ const val limit = 20
 object ProductRepositoryImpl : ProductRepository {
     private var skip = 0
     private var productList = mutableListOf<Product>()
+    private var isLoading = true
 
     private val productListLD = MutableLiveData<List<Product>>()
     private val bucketListLD = MutableLiveData<List<Product>>()
@@ -21,8 +22,6 @@ object ProductRepositoryImpl : ProductRepository {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-//            val api_list = async { api.getProductList(skip, limit).products }
-//            productList = api_list.await()
             getUsersWithPagination()
         }
     }
@@ -58,18 +57,23 @@ object ProductRepositoryImpl : ProductRepository {
         getBacketList()
     }
 
-    private fun getUsersWithPagination(){
-        val response = api.getProductList(skip, limit).execute()
-        if(response.isSuccessful){
-            val products = response.body()
-            products?.let {
-                productList.addAll(it.products)
-                Log.e("AUF","$it")
+    override fun getUsersWithPagination() {
+        if (isLoading) {
+            synchronized(this) {
+                val response = api.getProductList(skip, limit).execute()
+                skip += 20
+                Log.e("AUF", Thread.currentThread().name)
+                if (response.isSuccessful && response.body()?.products?.isEmpty() == false) {
+                    val products = response.body()
+                    products?.let {
+                        productList.addAll(it.products)
+                        Log.e("AUF", "$it")
+                    }
+                } else {
+                    isLoading = false
+                }
+                getProductList()
             }
-        }else{
-            TODO()
         }
-        skip+=20
-        getProductList()
     }
 }
