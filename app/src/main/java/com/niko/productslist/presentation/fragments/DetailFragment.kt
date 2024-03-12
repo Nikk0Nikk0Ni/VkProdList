@@ -10,6 +10,10 @@ import com.niko.productslist.R
 import com.niko.productslist.databinding.FragmentDetailBinding
 import com.niko.productslist.presentation.viewModels.DetailViewModel
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class DetailFragment : Fragment() {
     private var _binding : FragmentDetailBinding? = null
@@ -29,6 +33,15 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDetail()
+        loadingData()
+    }
+
+    private fun loadingData() {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            binding.layProgress.visibility = View.GONE
+            binding.layInfo.visibility = View.VISIBLE
+        }
     }
 
     private fun setDetail() = with(binding) {
