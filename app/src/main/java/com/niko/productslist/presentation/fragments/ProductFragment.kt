@@ -61,7 +61,11 @@ class ProductFragment : Fragment() {
             viewModel.setDetail(it.id)
         }
         adapter.onLongTap = {
-            viewModel.addToBacket(it.id)
+            if (!it.isRequired)
+                viewModel.addToBacket(it.id)
+            else
+                viewModel.removeFromBacket(it.id)
+            adapter.notifyItemChanged(it.id - 1)
         }
         addPagination()
     }

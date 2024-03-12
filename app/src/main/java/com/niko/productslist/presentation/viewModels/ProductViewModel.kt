@@ -8,6 +8,7 @@ import com.niko.productslist.domain.models.Product
 import com.niko.productslist.domain.useCases.AddToBacket
 import com.niko.productslist.domain.useCases.GetProductList
 import com.niko.productslist.domain.useCases.GetUsersWithPagination
+import com.niko.productslist.domain.useCases.RemoveFromBacket
 import com.niko.productslist.domain.useCases.SetProductDetail
 
 class ProductViewModel : ViewModel() {
@@ -16,12 +17,16 @@ class ProductViewModel : ViewModel() {
     private val addToBacket = AddToBacket(repository)
     private val setDetail = SetProductDetail(repository)
     private val getUsers = GetUsersWithPagination(repository)
+    private val removeFromBacket = RemoveFromBacket(repository)
 
     fun getProductList() : LiveData<List<Product>>{
         return getList.getProductList()
     }
     fun addToBacket(id : Int){
         addToBacket.addToBacket(id)
+    }
+    fun removeFromBacket(id : Int){
+        removeFromBacket.removeFromBacket(id)
     }
     fun setDetail(id: Int){
         setDetail.setDetail(id)
