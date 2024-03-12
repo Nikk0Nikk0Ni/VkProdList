@@ -13,8 +13,8 @@
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:scaleType="fitXY"
-        app:layout_constraintStart_toEndOf="@id/btnLeft"
-        app:layout_constraintEnd_toStartOf="@id/btnRight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars"/>
 
@@ -92,25 +92,4 @@
 
     </ScrollView>
 
-    <ImageButton
-        android:id="@+id/btnLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:adjustViewBounds="false"
-        android:cropToPadding="false"
-        android:src="@drawable/lefy"
-        app:layout_constraintBottom_toBottomOf="@id/imgIconDet"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/btnRight"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-
-        android:src="@drawable/right"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/imgIconDet"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,4 +17,6 @@ interface ProductRepository {
 
     fun removeFromBacket(id: Int)
 
+    fun getUsersWithPagination()
+
 }
