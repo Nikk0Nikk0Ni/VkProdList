@@ -36,5 +36,9 @@ class ProductHolder(view: View) : RecyclerView.ViewHolder(view) {
                 onLong?.invoke(product)
                 true
             }
+            if(product.isRequired)
+                binding.imgLike.visibility = View.VISIBLE
+            else
+                binding.imgLike.visibility = View.GONE
         }
 }
