@@ -1,4 +1,4 @@
-<h2>**Stack**</h2>
+<h2>__Stack__</h2>
 - Kotlin
 - MVVM
 - Single Activity
