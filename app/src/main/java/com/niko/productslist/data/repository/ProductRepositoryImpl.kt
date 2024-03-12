@@ -1,5 +1,6 @@
 package com.niko.productslist.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.niko.productslist.data.api.api
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 const val limit = 20
 object ProductRepositoryImpl : ProductRepository {
     private var skip = 0
-    private var productList = listOf<Product>()
+    private var productList = mutableListOf<Product>()
 
     private val productListLD = MutableLiveData<List<Product>>()
     private val bucketListLD = MutableLiveData<List<Product>>()
@@ -20,9 +21,9 @@ object ProductRepositoryImpl : ProductRepository {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            val api_list = async { api.getProductList(skip,limit).products }
-            productList = api_list.await()
-            getProductList()
+//            val api_list = async { api.getProductList(skip, limit).products }
+//            productList = api_list.await()
+            getUsersWithPagination()
         }
     }
 
@@ -55,5 +56,20 @@ object ProductRepositoryImpl : ProductRepository {
     override fun removeFromBacket(id: Int) {
         productList.find { it.id == id }?.isRequired = false
         getBacketList()
+    }
+
+    private fun getUsersWithPagination(){
+        val response = api.getProductList(skip, limit).execute()
+        if(response.isSuccessful){
+            val products = response.body()
+            products?.let {
+                productList.addAll(it.products)
+                Log.e("AUF","$it")
+            }
+        }else{
+            TODO()
+        }
+        skip+=20
+        getProductList()
     }
 }

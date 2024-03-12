@@ -28,9 +28,10 @@ class ProductFragment : Fragment() {
 
     private fun observeProductList() {
         viewModel.getProductList().observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            adapter.submitList(it.toList())
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
